@@ -20,6 +20,8 @@ type_list = [
     'search',
     'my_fav',
     'handle_fav',
+    'my_rss',
+    'handle_rss',
 ]
 type_dict = generate_enum_dict(type_list)
 
@@ -62,6 +64,8 @@ res_code_list = [
     'user_is_exist',
     'fav_handle_success',
     'fav_handle_fail',
+    'rss_handle_success',
+    'rss_handle_fail',
 ]
 res_code_dict = generate_enum_dict(res_code_list)
 
@@ -107,8 +111,14 @@ cat_example = {
     "cat_id":123,
     "title":"初中",
     "sub_title":"中考",
-    "sub_cat":[123,123,123],
-    "bg_image":"http://test.image.com",
+    "sub_cat":[
+        {
+            "title":"中考",
+            "last_title":"最新中考资讯大全",
+            "last_modify":"2016-03-26 23:00",
+            "bg_image":"http://test.image.com",
+        },
+    ],
 }
 
 cat_guide_response = {
@@ -238,3 +248,33 @@ handle_fav_response = {
 }
 
 mock_data[type_dict['handle_fav']] = handle_fav_response
+
+'''=====================订阅模块====================='''
+
+my_rss_request = {
+    "type":type_dict['my_rss'],
+    "qid":"mock",
+    "uid":111222, 
+}
+
+my_rss_response = {
+    "qid":"mock",
+    "fav_list":[cat_example, cat_example, cat_example],
+}
+
+mock_data[type_dict['my_rss']] = my_rss_response
+
+handle_rss_request = {
+    "type":type_dict['handle_rss'],
+    "qid":"mock",
+    "opt":opt_dict['add'],
+    "uid":111222,
+    "cat_id":333,
+}
+
+handle_cat_response = {
+    "qid":"mock",
+    "rescode":res_code_dict['rss_handle_success'],
+}
+
+mock_data[type_dict['handle_rss']] = handle_rss_response
