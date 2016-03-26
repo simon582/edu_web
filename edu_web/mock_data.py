@@ -272,7 +272,7 @@ handle_rss_request = {
     "cat_id":333,
 }
 
-handle_cat_response = {
+handle_rss_response = {
     "qid":"mock",
     "rescode":res_code_dict['rss_handle_success'],
 }
