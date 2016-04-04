@@ -166,6 +166,12 @@ news_homepage_request = {
     "doc_id":123,
 }
 
+text_example = [
+    {'text':'first'},
+    {'text':'second'},
+    {'image':'http://text.image.com'},
+    {'text':'thrid'},
+]
 news_homepage_response = {
     "qid":"mock",
     "title":"中考",
@@ -175,7 +181,7 @@ news_homepage_response = {
     "source_icon":"http://icon.image.com/",
     "source_desc":"新浪",
     "collection_cnt":88,
-    "text":"aaaaaaaaaa\nbbbbbbbbb\nccccccccc\n",
+    "text":text_example,
 }
 
 mock_data[type_dict['news_homepage']] = news_homepage_response
