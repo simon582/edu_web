@@ -22,6 +22,8 @@ type_list = [
     'handle_fav',
     'my_rss',
     'handle_rss',
+    'source_guide',
+    'source_homepage',
 ]
 type_dict = generate_enum_dict(type_list)
 
@@ -113,6 +115,7 @@ cat_example = {
     "sub_title":"中考",
     "sub_cat":[
         {
+            "cat_id":"123001",
             "title":"中考",
             "last_title":"最新中考资讯大全",
             "last_modify":"2016-03-26 23:00",
@@ -146,7 +149,6 @@ doc_example = {
     "source_icon":"http://icon.image.com/",
     "source_desc":"百度",
     "collection_cnt":88,
-    "share_cnt":66,
 }
 
 cat_homepage_response = {
@@ -166,6 +168,13 @@ news_homepage_request = {
 
 news_homepage_response = {
     "qid":"mock",
+    "title":"中考",
+    "author":"mockauthor",
+    "datetime":"2016-03-20 20:00:00",
+    "source":"Sina",
+    "source_icon":"http://icon.image.com/",
+    "source_desc":"新浪",
+    "collection_cnt":88,
     "text":"aaaaaaaaaa\nbbbbbbbbb\nccccccccc\n",
 }
 
@@ -228,15 +237,13 @@ mock_data[type_dict['my_fav']] = my_fav_response
 opt_list = [
     'add',
     'remove',
-    'add_doc',
-    'remove_doc',
 ]
 opt_dict = generate_enum_dict(opt_list)
 
 handle_fav_request = {
     "type":type_dict['handle_fav'],
     "qid":"mock",
-    "opt":opt_dict['add_doc'],
+    "opt":opt_dict['add'],
     "uid":111222,
     "fav_id":333,
     "doc_id":123,
@@ -278,3 +285,38 @@ handle_rss_response = {
 }
 
 mock_data[type_dict['handle_rss']] = handle_rss_response
+
+'''=====================新闻源模块====================='''
+
+source_guide_request = {
+    "type":type_dict['source_guide'],
+    "qid":"mock",
+}
+
+source_example = {
+    'source':'sina',
+    'source_desc':'新浪新闻',
+    'source_icon':'http://icon.image.com/',
+    "last_title":"最新中考资讯大全",
+    "last_modify":"2016-03-26 23:00",
+    "bg_image":"http://test.image.com",
+}
+
+source_guide_response = {
+    "qid":"mock",
+    "source_list":[source_example, source_example, source_example],
+}
+
+mock_data[type_dict['source_guide']] = source_guide_response
+
+source_homepage_request = {
+    "type":type_dict['source_homepage'],
+    "qid":"mock",
+}
+
+source_homepage_response = {
+    "qid":"mock",
+    "doc_list":[doc_example,doc_example,doc_example],
+}
+
+mock_data[type_dict['source_homepage']] = source_homepage_response
