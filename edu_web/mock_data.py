@@ -15,7 +15,6 @@ type_list = [
     'cat_guide', 
     'news_homepage',
     'cat_homepage',
-    'source_homepage',
     'my_homepage',
     'search',
     'my_fav',
