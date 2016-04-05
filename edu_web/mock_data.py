@@ -9,20 +9,20 @@ def generate_enum_dict(type_list):
 mock_data = {}
 
 type_list = [
-    'welcome', 
-    'login', 
-    'register', 
-    'cat_guide', 
-    'news_homepage',
-    'cat_homepage',
-    'my_homepage',
-    'search',
-    'my_fav',
-    'handle_fav',
-    'my_rss',
-    'handle_rss',
-    'source_guide',
-    'source_homepage',
+    'welcome',                  #0 
+    'login',                    #1
+    'register',                 #2
+    'cat_guide',                #3
+    'news_homepage',            #4
+    'cat_homepage',             #5
+    'my_homepage',              #6
+    'search',                   #7
+    'my_fav',                   #8
+    'handle_fav',               #9
+    'my_rss',                   #10
+    'handle_rss',               #11
+    'source_guide',             #12
+    'source_homepage',          #13
 ]
 type_dict = generate_enum_dict(type_list)
 
@@ -165,12 +165,6 @@ news_homepage_request = {
     "doc_id":123,
 }
 
-text_example = [
-    {'text':'first'},
-    {'text':'second'},
-    {'image':'http://text.image.com'},
-    {'text':'thrid'},
-]
 news_homepage_response = {
     "qid":"mock",
     "title":"中考",
@@ -180,7 +174,7 @@ news_homepage_response = {
     "source_icon":"http://icon.image.com/",
     "source_desc":"新浪",
     "collection_cnt":88,
-    "text":text_example,
+    "text":'aaaaa<br>bbbbb<br><img src="http://text.image.com/" width=200 height=500>ccccc<br>',
 }
 
 mock_data[type_dict['news_homepage']] = news_homepage_response
@@ -271,7 +265,7 @@ my_rss_request = {
 
 my_rss_response = {
     "qid":"mock",
-    "fav_list":[cat_example, cat_example, cat_example],
+    "cat_list":[cat_example, cat_example, cat_example],
 }
 
 mock_data[type_dict['my_rss']] = my_rss_response
