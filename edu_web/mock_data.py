@@ -24,6 +24,7 @@ type_list = [
     'source_guide',             #12
     'source_homepage',          #13
     'rss_homepage',             #14
+    'handle_share',             #15
 ]
 type_dict = generate_enum_dict(type_list)
 
@@ -343,3 +344,16 @@ source_homepage_response = {
 }
 
 mock_data[type_dict['source_homepage']] = source_homepage_response
+
+'''=====================分享统计模块====================='''
+
+handle_share_request = {
+    "type":type_dict['handle_share'],
+    "qid":"mock",
+    "doc_id":100001,
+}
+
+handle_share_response = {
+    "qid":"mock",
+    "rescode":0,
+}
