@@ -1,5 +1,7 @@
 # -*- coding:utf-8 -*-
 
+import random
+
 def generate_enum_dict(type_list):
     type_dict = {}
     for tid in xrange(len(type_list)):
@@ -25,6 +27,7 @@ type_list = [
     'source_homepage',          #13
     'rss_homepage',             #14
     'handle_share',             #15
+    'handle_like',              #16
 ]
 type_dict = generate_enum_dict(type_list)
 
@@ -137,7 +140,9 @@ mock_data[type_dict['cat_guide']] = cat_guide_response
 cat_homepage_request = {
     "type":type_dict['cat_homepage'],
     "qid":"mock",
-    "data":"cat_id=123&page=1&page_max_cnt=10",
+    "cat_id":"123",
+    "page":1,
+    "page_max_cnt":10,
 }
 
 doc_example = {
@@ -146,16 +151,23 @@ doc_example = {
     "author":"mockauthor",
     "datetime":"2016-03-20 20:00:00",
     "source":"Sina",
+    "bg_image":"http://background.image.com/",
     "text":"This is sample text",
     "source_icon":"http://icon.image.com/",
     "source_desc":"百度",
     "share_cnt":22,
     "collection_cnt":88,
+    "like_cnt":100,
 }
+
+example_doc_list = []
+for i in xrange(10):
+    example_doc_list.append(doc_example)
 
 cat_homepage_response = {
     "qid":"mock",
-    "doc_list":[doc_example,doc_example,doc_example]
+    "end":random.choice([0,1]),
+    "doc_list":example_doc_list,
 }
 
 mock_data[type_dict['cat_homepage']] = cat_homepage_response
@@ -170,14 +182,8 @@ news_homepage_request = {
 
 news_homepage_response = {
     "qid":"mock",
-    "title":"中考",
-    "author":"mockauthor",
-    "datetime":"2016-03-20 20:00:00",
-    "source":"Sina",
-    "source_icon":"http://icon.image.com/",
-    "source_desc":"新浪",
-    "collection_cnt":88,
     "text":'aaaaa<br>bbbbb<br><img src="http://text.image.com/" width=200 height=500>ccccc<br>',
+    "base":doc_example,
 }
 
 mock_data[type_dict['news_homepage']] = news_homepage_response
@@ -203,12 +209,15 @@ mock_data[type_dict['my_homepage']] = my_homepage_response
 search_request = {
     "type":type_dict['search'],
     "qid":"mock",
-    "data":"query=中考",
+    "query":"中考",
+    "page":1,
+    "page_max_cnt":10,
 }
 
 search_response = {
     "qid":"mock",
-    "doc_list":[doc_example,doc_example,doc_example],
+    "end":random.choice([0,1]),
+    "doc_list":example_doc_list,
 }
 
 mock_data[type_dict['search']] = search_response
@@ -219,7 +228,7 @@ fav_example = {
     "fav_id":333,
     "uid":111222,
     "fav_name":"中考教育",
-    "doc_list":[doc_example,doc_example,doc_example],
+    "doc_list":example_doc_list,
     "fav_icon":"http://icon.fav.com",    
 }
 
@@ -287,7 +296,7 @@ handle_rss_request = {
     "qid":"mock",
     "opt":opt_dict['add'],
     "uid":111222,
-    "cat_id":333,
+    "cat_id":[111,222,333],
 }
 
 handle_rss_response = {
@@ -301,11 +310,14 @@ rss_homepage_request = {
     "type":type_dict['rss_homepage'],
     "qid":"mock",
     "uid":111222, 
+    "page":1,
+    "page_max_cnt":10,
 }
 
 rss_homepage_response = {
     "qid":"mock",
-    "doc_list":[doc_example,doc_example,doc_example],
+    "end":random.choice([0,1]),
+    "doc_list":example_doc_list,
 }
 
 mock_data[type_dict['rss_homepage']] = rss_homepage_response
@@ -336,11 +348,15 @@ mock_data[type_dict['source_guide']] = source_guide_response
 source_homepage_request = {
     "type":type_dict['source_homepage'],
     "qid":"mock",
+    "source_name":"Sina",
+    "page":1,
+    "page_max_cnt":10,
 }
 
 source_homepage_response = {
     "qid":"mock",
-    "doc_list":[doc_example,doc_example,doc_example],
+    "end":random.choice([0,1]),
+    "doc_list":example_doc_list,
 }
 
 mock_data[type_dict['source_homepage']] = source_homepage_response
@@ -359,3 +375,18 @@ handle_share_response = {
 }
 
 mock_data[type_dict['handle_share']] = handle_share_response
+
+'''=====================点赞统计模块====================='''
+
+handle_like_request = {
+    "type":type_dict['handle_like'],
+    "qid":"mock",
+    "doc_id":100001,
+}
+
+handle_like_response = {
+    "qid":"mock",
+    "rescode":0,
+}
+
+mock_data[type_dict['handle_like']] = handle_like_response
