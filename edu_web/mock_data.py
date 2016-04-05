@@ -357,3 +357,5 @@ handle_share_response = {
     "qid":"mock",
     "rescode":0,
 }
+
+mock_data[type_dict['handle_share']] = handle_share_response
