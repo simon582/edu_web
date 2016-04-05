@@ -23,6 +23,7 @@ type_list = [
     'handle_rss',               #11
     'source_guide',             #12
     'source_homepage',          #13
+    'rss_homepage',             #14
 ]
 type_dict = generate_enum_dict(type_list)
 
@@ -147,6 +148,7 @@ doc_example = {
     "text":"This is sample text",
     "source_icon":"http://icon.image.com/",
     "source_desc":"百度",
+    "share_cnt":22,
     "collection_cnt":88,
 }
 
@@ -263,9 +265,18 @@ my_rss_request = {
     "uid":111222, 
 }
 
+
+rss_cat_example = {
+    "cat_id":"123001",
+    "title":"中考",
+    "last_title":"最新中考资讯大全",
+    "last_modify":"2016-03-26 23:00",
+    "bg_image":"http://test.image.com",
+}
+
 my_rss_response = {
     "qid":"mock",
-    "cat_list":[cat_example, cat_example, cat_example],
+    "cat_list":[rss_cat_example, rss_cat_example, rss_cat_example],
 }
 
 mock_data[type_dict['my_rss']] = my_rss_response
@@ -284,6 +295,19 @@ handle_rss_response = {
 }
 
 mock_data[type_dict['handle_rss']] = handle_rss_response
+
+rss_homepage_request = {
+    "type":type_dict['rss_homepage'],
+    "qid":"mock",
+    "uid":111222, 
+}
+
+rss_homepage_response = {
+    "qid":"mock",
+    "doc_list":[doc_example,doc_example,doc_example],
+}
+
+mock_data[type_dict['rss_homepage']] = rss_homepage_response
 
 '''=====================新闻源模块====================='''
 
