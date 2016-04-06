@@ -174,16 +174,22 @@ mock_data[type_dict['cat_homepage']] = cat_homepage_response
 
 '''=====================新闻内容模块====================='''
 
+res_code_dict = generate_enum_dict(res_code_list)
+
 news_homepage_request = {
     "type":type_dict['news_homepage'],
     "qid":"mock",
     "doc_id":123,
+    #type=cat&cat_id=321 or type=fav&fav_id=111 or type=source&source_name=sina
+    "list_desc":"type=rss&uid=111",
 }
 
 news_homepage_response = {
     "qid":"mock",
     "text":'aaaaa<br>bbbbb<br><img src="http://text.image.com/" width=200 height=500>ccccc<br>',
     "base":doc_example,
+    "pre_id":122,
+    "next_id":124,
 }
 
 mock_data[type_dict['news_homepage']] = news_homepage_response
