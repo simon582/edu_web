@@ -1,6 +1,13 @@
 # -*- coding:utf-8 -*-
 
 import comm
+import os
+import random
+
+def get_default_img():
+    default_img_dir = '/data/edu/default_img/'
+    img_list = os.listdir(default_img_dir)
+    return '/media/default_img/' + random.choice(img_list)        
 
 def get_cat_guide():
     cat_list = []
@@ -16,7 +23,7 @@ def get_cat_guide():
             sub_cat = {}
             sub_cat['cat_id'] = prod['cat_id']
             sub_cat['title'] = prod['cat_name']
-            sub_cat['bg_image'] = ''
+            sub_cat['bg_image'] = get_default_img()
             cat['sub_cat'].append(sub_cat)
         cat_list.append(cat) 
     return cat_list
@@ -29,6 +36,8 @@ def transform_doc(doc):
         if len(text) > 100:
             break
     doc['text'] = text
+    if not 'bg_image' in doc:
+        doc['bg_image'] = get_default_img()
     return doc 
 
 def get_cat_homepage(cat_id, page, page_max_cnt):
