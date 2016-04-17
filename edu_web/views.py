@@ -41,11 +41,11 @@ def get_list_val(key_name, request):
 
 def normal_work(tid, qid, request):
     prod = {}
-    res['rescode'] = 0
+    prod['rescode'] = 0
     stat, prod['qid'] = get_str_val('qid', request)
     if not stat:
-        res['rescode'] = 1
-        res['err'] = prod['qid']
+        prod['rescode'] = 1
+        prod['err'] = prod['qid']
 
     # 欢迎
     if tid == mock_data.type_dict['welcome']:
