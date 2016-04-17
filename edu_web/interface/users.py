@@ -72,3 +72,21 @@ def handle_rss(uid, cat_id_list, opt):
     del(user_dict['_id'])
     edu_db.user.update({'uid':uid}, {'$set':user_dict})
     return {'rescode':res_code_dict['success']}
+
+# TODO
+def get_my_rss(uid):
+    edu_db = comm.create_conn()
+
+# TODO
+def get_rss_homepage(uid, page, page_max_cnt):
+    edu_db = comm.create_conn()
+
+# TODO
+def get_my_fav(uid):
+    edu_db = comm.create_conn()
+
+# TODO
+def handle_fav(uid, opt, fav_id, doc_id):
+    edu_db = comm.create_conn()
+
+

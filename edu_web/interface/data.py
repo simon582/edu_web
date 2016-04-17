@@ -67,6 +67,72 @@ def get_news_homepage(doc_id):
     prod['base'] = transform_doc(doc)
     return prod
 
+def get_query(query, page, page_max_cnt):
+    edu_db = comm.create_conn()
+    res = {}
+    res['doc_list'] = []
+    temp_list = []
+    for prod in edu_db.formal_news.find():
+        if prod['title'].find(query) != -1:
+            temp_list.append(transform_doc(doc))
+    sorted(temp_list, key=lambda temp : temp['ts'])
+    max_pos = min(len(temp_list)-1, (page+1)*page_max_cnt) 
+    res['doc_list'] = temp_list[page*page_max_cnt : max_pos]
+    if max_pos == len(temp_list)-1:
+        res['end'] = 1
+    else:
+        res['end'] = 0
+    return res
+
+def get_source():
+    #edu_db = comm.create_conn()
+    #source_list = edu_db.news.distinct("source")
+    res = {}
+    res['source_list'] = []
+    source_info = {}
+    source_info['source'] = 'eol'
+    source_info['source_desc'] = '中国教育在线'
+    source_info['bg_image'] = get_default_img()
+    source_info['last_title'] = ''
+    source_info['last_modify'] = ''
+    res['source_list'].append(source_info)
+    return res
+
+def get_source_homepage(source_name, page, page_max_cnt):
+    edu_db = comm.create_conn()
+    prod = {}
+    prod['doc_list'] = []
+    doc_list = edu_db.formal_news.find({'source_name':source_name})
+    temp_list = []
+    for doc in doc_list:
+        temp_list.append(transform_doc(doc))
+    sorted(temp_list, key=lambda temp : temp['ts'])
+    max_pos = min(len(temp_list)-1, (page+1)*page_max_cnt) 
+    prod['doc_list'] = temp_list[page*page_max_cnt : max_pos]
+    if max_pos == len(temp_list)-1:
+        prod['end'] = 1
+    else:
+        prod['end'] = 0
+    return prod
+
+def handle_share(doc_id):
+    edu_db = comm.create_conn()
+    prod = edu_db.formal_news.find_one({'doc_id':doc_id})
+    del(prod['_id'])
+    prod['share_cnt'] += 1
+    edu_db.formal_news.update({'doc_id':doc_id}, {'$set':prod})
+    return {'rescode':0}
+
+# TODO
+def handle_like(doc_id):
+    edu_db = comm.create_conn()
+    prod = edu_db.formal_news.find_one({'doc_id':doc_id})
+    del(prod['_id'])
+    prod['like_cnt'] += 1
+    edu_db.formal_news.update({'doc_id':doc_id}, {'$set':prod})
+    return {'rescode':0}
+
+
 if __name__ == "__main__":
     # for test
     #print get_cat_guide()

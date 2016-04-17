@@ -41,83 +41,220 @@ def get_list_val(key_name, request):
 
 def normal_work(tid, qid, request):
     prod = {}
+    res['rescode'] = 0
     stat, prod['qid'] = get_str_val('qid', request)
     if not stat:
-        return HttpResponse(prod['qid'])
+        res['rescode'] = 1
+        res['err'] = prod['qid']
 
+    # 欢迎
     if tid == mock_data.type_dict['welcome']:
         prod['img_url'] = ''
 
+    # 获取分类
     elif tid == mock_data.type_dict['cat_guide']:
         prod['cat_list'] = data.get_cat_guide()
 
+    # 登录
     elif tid == mock_data.type_dict['login']:
         stat, username = get_str_val('username', request)
         if not stat:
-            return HttpResponse(username)
+            res['rescode'] = 1
+            res['err'] = username
         stat, passwd = get_str_val('passwd', request)
         if not stat:
-            return HttpResponse(passwd)
+            res['rescode'] = 1
+            res['err'] = passwd
         res = users.login_user(username, passwd)
         for k,v in res.items():
             prod[k] = v       
  
+    # 注册
     elif tid == mock_data.type_dict['register']:
         stat, username = get_str_val('username', request)
         if not stat:
-            return HttpResponse(username)
+            res['rescode'] = 1
+            res['err'] = username
         stat, passwd = get_str_val('passwd', request)
         if not stat:
-            return HttpResponse(passwd)
+            res['rescode'] = 1
+            res['err'] = passwd
         stat, category = get_int_val('category', request)
         if not stat:
-            return HttpResponse(category)
+            res['rescode'] = 1
+            res['err'] = category
         stat, data = get_str_val('data', request)
         if not stat:
-            return HttpResponse(data)
+            res['rescode'] = 1
+            res['err'] = data
         
         res = users.register_user(username, passwd, category, data)
         for k,v in res.items():
             prod[k] = v
 
+    # 分类主页
     elif tid == mock_data.type_dict['cat_homepage']:
         stat, cat_id = get_int_val('cat_id', request)
         if not stat:
-            return HttpResponse(cat_id)
+            res['rescode'] = 1
+            res['err'] = cat_id
         stat, page = get_int_val('page', request)
         if not stat:
-            return HttpResponse(page)
+            res['rescode'] = 1
+            res['err'] = page
         stat, page_max_cnt = get_int_val('page_max_cnt', request)
         if not stat:
-            return HttpResponse(page_max_cnt)
+            res['rescode'] = 1
+            res['err'] = page_max_cnt
         res = data.get_cat_homepage(cat_id, page, page_max_cnt)
         for k,v in res.items():
             prod[k] = v
 
+    # 新闻主页
     elif tid == mock_data.type_dict['news_homepage']:
         stat, doc_id = get_str_val('doc_id', -1)
         if not stat:
-            return HttpResponse(doc_id)
+            res['rescode'] = 1
+            res['err'] = doc_id
         res = data.get_news_homepage(doc_id)
         for k,v in res.items():
             prod[k] = v
 
+    # 个人主页        
     elif tid == mock_data.type_dict['my_homepage']:
         prod['portrait_url'] = ''
         prod['others'] = ''
 
+    # 增删订阅分类
     elif tid == mock_data.type_dict['handle_rss']:
         stat, uid = get_int_val('uid', request)
         if not stat:
-            return HttpResponse(uid)
+            res['rescode'] = 1
+            res['err'] = uid
         stat, opt = get_int_val('opt', request)
         if not stat:
-            return HttpResponse(opt)
+            res['rescode'] = 1
+            res['err'] = opt
         stat, cat_id_list = get_list_val('cat_id', request)
         if not stat:
-            return HttpResponse(cat_id_list)
+            res['rescode'] = 1
+            res['err'] = cat_id_list
         res = users.handle_rss(uid, cat_id_list, opt)
         prod['rescode'] = res['rescode']
+
+    elif tid == mock_data.type_dict['my_rss']:
+        stat, uid = get_int_val('uid', request)
+        if not stat:
+            res['rescode'] = 1
+            res['err'] = uid
+        res = users.get_my_rss(uid)
+        for k,v in res.items():
+            prod[k] = v
+
+    elif tid == mock_data.type_dict['rss_homepage']:
+        stat, uid = get_int_val('uid', request)
+        if not stat:
+            res['rescode'] = 1
+            res['err'] = uid
+        stat, page = get_int_val('page', request)
+        if not stat:
+            res['rescode'] = 1
+            res['err'] = page
+        stat, page_max_cnt = get_int_val('page_max_cnt', request)
+        if not stat:
+            res['rescode'] = 1
+            res['err'] = page_max_cnt
+        res = users.get_rss_homepage(uid, page, page_max_cnt)
+        for k,v in res.items():
+            prod[k] = v
+
+    elif tid == mock_data.type_dict['my_fav']:
+        stat, uid = get_int_val('uid', request)
+        if not stat:
+            res['rescode'] = 1
+            res['err'] = uid
+        res = users.get_my_fav(uid)
+        for k,v in res.items():
+            prod[k] = v
+
+    elif tid == mock_data.type_dict['handle_fav']:
+        stat, uid = get_int_val('uid', request)
+        if not stat:
+            res['rescode'] = 1
+            res['err'] = uid
+        stat, opt = get_int_val('opt', request)
+        if not stat:
+            res['rescode'] = 1
+            res['err'] = opt
+        stat, fav_id = get_int_val('fav_id', request)
+        if not stat:
+            res['rescode'] = 1
+            res['err'] = fav_id
+        stat, doc_id = get_str_val('doc_id', request)
+        if not stat:
+            res['rescode'] = 1
+            res['err'] = doc_id
+        res = users.handle_fav(uid, opt, fav_id, doc_id)
+        for k,v in res.items():
+            prod[k] = v
+
+    elif tid == mock_data.type_dict['search']:
+        stat, query = get_str_val('query', request)
+        if not stat:
+            res['rescode'] = 1
+            res['err'] = query
+        stat, page = get_int_val('page', request)
+        if not stat:
+            res['rescode'] = 1
+            res['err'] = page
+        stat, page_max_cnt = get_int_val('page_max_cnt', request)
+        if not stat:
+            res['rescode'] = 1
+            res['err'] = page_max_cnt
+        res = data.get_query(query, page, page_max_cnt)
+        for k,v in res.items():
+            prod[k] = v
+
+    elif tid == mock_data.type_dict['source_guide']:
+        res = data.get_source()
+        for k,v in res.items():
+            prod[k] = v
+
+    elif tid == mock_data.type_dict['source_homepage']:
+        stat, source_name = get_str_val('source_name', request)
+        if not stat:
+            res['rescode'] = 1
+            res['err'] = query
+        stat, page = get_int_val('page', request)
+        if not stat:
+            res['rescode'] = 1
+            res['err'] = page
+        stat, page_max_cnt = get_int_val('page_max_cnt', request)
+        if not stat:
+            res['rescode'] = 1
+            res['err'] = page_max_cnt
+        res = data.get_source_homepage(source_name, page, page_max_cnt)
+        for k,v in res.items():
+            prod[k] = v
+
+    elif tid == mock_data.type_dict['handle_share']:
+        stat, doc_id = get_str_val('doc_id', request)
+        if not stat:
+            res['rescode'] = 1
+            res['err'] = doc_id
+        res = data.handle_share(doc_id)
+        for k,v in res.items():
+            prod[k] = v
+
+    elif tid == mock_data.type_dict['handle_like']:
+        stat, doc_id = get_str_val('doc_id', request)
+        if not stat:
+            res['rescode'] = 1
+            res['err'] = doc_id
+        res = data.handle_like(doc_id)
+        for k,v in res.items():
+            prod[k] = v
+
     return HttpResponse(json.dumps(prod, ensure_ascii=False))
 
 @csrf_exempt

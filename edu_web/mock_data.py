@@ -116,7 +116,6 @@ cat_guide_request = {
 cat_example = {
     "cat_id":123,
     "title":"初中",
-    "sub_title":"中考",
     "sub_cat":[
         {
             "cat_id":"123001",
@@ -302,7 +301,7 @@ handle_rss_request = {
     "qid":"mock",
     "opt":opt_dict['add'],
     "uid":111222,
-    "cat_id":[111,222,333],
+    "cat_id":'111,222,333',
 }
 
 handle_rss_response = {
