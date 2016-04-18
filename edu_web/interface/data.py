@@ -3,11 +3,7 @@
 import comm
 import os
 import random
-
-def get_default_img():
-    default_img_dir = '/data/edu/default_img/'
-    img_list = os.listdir(default_img_dir)
-    return '/media/default_img/' + random.choice(img_list)        
+from comm import get_default_img
 
 def get_cat_guide():
     cat_list = []
@@ -61,6 +57,8 @@ def get_news_homepage(doc_id):
     edu_db = comm.create_conn()
     prod = {}
     doc = edu_db.formal_news.find_one({"doc_id":doc_id})
+    if not doc:
+        return {}
     prod['text'] = ''
     for t in doc['text']:
         prod['text'] == t + '<br>'

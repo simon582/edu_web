@@ -3,6 +3,7 @@
 import pymongo
 import comm
 import hashlib
+from comm import get_default_img
 
 res_code_list = [
     'success',
@@ -64,7 +65,7 @@ def handle_rss(uid, cat_id_list, opt):
         if not 'rss_list' in user_dict:
             user_dict['rss_list'] = []
         for cat_id in cat_id_list:
-            user_dict['rss_list'].append(cat_id)
+            user_dict['rss_list'].append(int(cat_id))
         user_dict['rss_list'] = list(set(user_dict['rss_list']))
     if opt == opt_dict['remove']:
         for cat_id in cat_id_list:
@@ -73,13 +74,38 @@ def handle_rss(uid, cat_id_list, opt):
     edu_db.user.update({'uid':uid}, {'$set':user_dict})
     return {'rescode':res_code_dict['success']}
 
-# TODO
 def get_my_rss(uid):
     edu_db = comm.create_conn()
+    user_dict = edu_db.user.find_one({'uid':uid})
+    res = {}
+    res['cat_list'] = []
+    for cat_id in user_dict['rss_list']:
+        cat_info = {}
+        cat_dict = edu_db.cat.find_one({'cat_id':cat_id})
+        cat_info['cat_id'] = cat_id
+        cat_info['title'] = cat_dict['cat_name']
+        cat_info['bg_image'] = get_default_img()
+        res['cat_list'].append(cat_info)
+    return res 
 
-# TODO
 def get_rss_homepage(uid, page, page_max_cnt):
     edu_db = comm.create_conn()
+    res = {}
+    res['doc_list'] = []
+    user_dict = edu_db.user.find_one({'uid':uid})
+    temp_list = []
+    for cat_id in user_dict['rss_list']:
+        doc_list = edu_db.formal_news.find({'cat_id':cat_id})
+        for doc in doc_list:
+            temp_list.append(comm.transform_doc(doc))
+    sorted(temp_list, key=lambda temp : temp['ts'])
+    max_pos = min(len(temp_list)-1, (page+1)*page_max_cnt) 
+    res['doc_list'] = temp_list[page*page_max_cnt : max_pos]
+    if max_pos == len(temp_list) - 1:
+        res['end'] = 1
+    else:
+        res['end'] = 0
+    return res
 
 # TODO
 def get_my_fav(uid):
