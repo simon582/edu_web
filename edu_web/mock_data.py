@@ -28,6 +28,7 @@ type_list = [
     'rss_homepage',             #14
     'handle_share',             #15
     'handle_like',              #16
+    'handle_fav_set',           #17
 ]
 type_dict = generate_enum_dict(type_list)
 
@@ -271,6 +272,22 @@ handle_fav_response = {
 }
 
 mock_data[type_dict['handle_fav']] = handle_fav_response
+
+handle_fav_set_request = {
+    'type':type_dict['handle_fav_set'],
+    'qid':'mock',
+    'opt':opt_dict['add'],
+    'uid':111222,
+    'fav_id':'abc',
+    'fav_name':'高中教育',
+}
+
+handle_fav_set_response = {
+    'qid':'mock',
+    'rescode':res_code_dict['fav_handle_success'],
+}
+
+mock_data[type_dict['handle_fav_set']] = handle_fav_set_response
 
 '''=====================订阅模块====================='''
 

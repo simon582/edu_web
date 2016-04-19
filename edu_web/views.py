@@ -186,7 +186,7 @@ def normal_work(tid, qid, request):
         if not stat:
             prod['rescode'] = 1
             prod['err'] = opt
-        stat, fav_id = get_int_val('fav_id', request)
+        stat, fav_id = get_str_val('fav_id', request)
         if not stat:
             prod['rescode'] = 1
             prod['err'] = fav_id
@@ -198,6 +198,21 @@ def normal_work(tid, qid, request):
         for k,v in res.items():
             prod[k] = v
 
+    elif tid == mock_data.type_dict['handle_fav_set']:
+        stat, uid = get_int_val('uid', request)
+        if not stat:
+            prod['rescode'] = 1
+            prod['err'] = uid
+        stat, opt = get_int_val('opt', request)
+        if not stat:
+            prod['rescode'] = 1
+            prod['err'] = opt
+        stat, fav_id = get_str_val('fav_id', request)
+        stat, fav_name = get_str_val('fav_name', request)
+        res = users.handle_fav_set(uid, opt, fav_name, fav_id)
+        for k,v in res.items():
+            prod[k] = v        
+ 
     elif tid == mock_data.type_dict['search']:
         stat, query = get_str_val('query', request)
         if not stat:

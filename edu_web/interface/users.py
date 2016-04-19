@@ -107,12 +107,45 @@ def get_rss_homepage(uid, page, page_max_cnt):
         res['end'] = 0
     return res
 
-# TODO
 def get_my_fav(uid):
     edu_db = comm.create_conn()
+    res = {}
+    res['fav_list'] = []
+    user_dict = edu_db.user.find_one({'uid':uid})
+    for fav_id, fav_info in user_dict['fav_list'].items():
+        fav_dict = {}
+        fav_dict['fav_id'] = fav_id
+        fav_dict['uid'] = uid
+        fav_dict['fav_name'] = fav_info['fav_name']
+        fav_dict['doc_list'] = fav_info['doc_list']
+        fav_dict['fav_icon'] = get_default_img()
+        res['fav_list'].append(fav_dict)
+    return res 
 
-# TODO
 def handle_fav(uid, opt, fav_id, doc_id):
     edu_db = comm.create_conn()
+    user_dict = edu_db.user.find_one({'uid':uid})
+    if opt == opt_dict['add']:
+        user_dict['fav_list'][fav_id]['doc_list'].append(doc_id)
+    elif opt == opt_dict['remove']:
+        user_dict['fav_list'][fav_id]['doc_list'].remove(doc_id)
+    del(user_dict['_id'])
+    edu_db.user.update({'uid':uid}, {'$set':user_dict}) 
+    return {'rescode':res_code_dict['success']}
 
-
+def handle_fav_set(uid, opt, fav_name, fav_id):
+    edu_db = comm.create_conn()
+    user_dict = edu_db.user.find_one({'uid':uid})
+    if not 'fav_list' in user_dict:
+        user_dict['fav_list'] = {}
+    if opt == opt_dict['add']:
+        fav_id = hashlib.md5(fav_name).hexdigest()
+        user_dict['fav_list'][fav_id] = {} 
+        user_dict['fav_list'][fav_id]['fav_name'] = fav_name
+        user_dict['fav_list'][fav_id]['doc_list'] = []
+    if opt == opt_dict['remove']:
+        del(user_dict['fav_list'][fav_id])
+    del(user_dict['_id'])
+    edu_db.user.update({'uid':uid}, {'$set':user_dict}) 
+    return {'rescode':res_code_dict['success']}
+    
