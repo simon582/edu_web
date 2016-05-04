@@ -8,7 +8,7 @@ from django.http import HttpResponse
 import json
 sys.path.append('./edu_web/interface')
 import users
-import data
+import news
 
 def get_int_val(key_name, request):
     try:
@@ -39,7 +39,7 @@ def get_list_val(key_name, request):
     return True, val_list
 
 def normal_work(tid, qid, request):
-    global data
+    global news
     prod = {}
     prod['rescode'] = 0
     stat, prod['qid'] = get_str_val('qid', request)
@@ -53,72 +53,84 @@ def normal_work(tid, qid, request):
 
     # 获取分类
     elif tid == mock_data.type_dict['cat_guide']:
-        prod['cat_list'] = data.get_cat_guide()
+        prod['cat_list'] = news.get_cat_guide()
 
     # 登录
     elif tid == mock_data.type_dict['login']:
-        stat, username = get_str_val('username', request)
-        if not stat:
+        stat1, username = get_str_val('username', request)
+        if not stat1:
             prod['rescode'] = 1
             prod['err'] = username
-        stat, passwd = get_str_val('passwd', request)
-        if not stat:
+        stat2, passwd = get_str_val('passwd', request)
+        if not stat2:
             prod['rescode'] = 1
             prod['err'] = passwd
-        res = users.login_user(username, passwd)
-        for k,v in res.items():
-            prod[k] = v       
+        if stat1 and stat2:
+            res = users.login_user(username, passwd)
+            for k,v in res.items():
+                prod[k] = v
  
     # 注册
     elif tid == mock_data.type_dict['register']:
-        stat, username = get_str_val('username', request)
-        if not stat:
+        stat1, username = get_str_val('username', request)
+        if not stat1:
             prod['rescode'] = 1
             prod['err'] = username
-        stat, passwd = get_str_val('passwd', request)
-        if not stat:
+        stat2, passwd = get_str_val('passwd', request)
+        if not stat2:
             prod['rescode'] = 1
             prod['err'] = passwd
-        stat, category = get_int_val('category', request)
-        if not stat:
+        stat3, category = get_int_val('category', request)
+        if not stat3:
             prod['rescode'] = 1
             prod['err'] = category
-        stat, data = get_str_val('data', request)
-        if not stat:
+        stat4, data = get_str_val('data', request)
+        if not stat4:
             prod['rescode'] = 1
             prod['err'] = data
         
-        res = users.register_user(username, passwd, category, data)
-        for k,v in res.items():
-            prod[k] = v
+        if stat1 and stat2 and stat3 and stat4:
+            res = users.register_user(username, passwd, category, news)
+            for k,v in res.items():
+                prod[k] = v
 
     # 分类主页
     elif tid == mock_data.type_dict['cat_homepage']:
-        stat, cat_id = get_int_val('cat_id', request)
-        if not stat:
+        stat1, cat_id = get_int_val('cat_id', request)
+        if not stat1:
             prod['rescode'] = 1
             prod['err'] = cat_id
-        stat, page = get_int_val('page', request)
-        if not stat:
+        stat2, page = get_int_val('page', request)
+        if not stat2:
             prod['rescode'] = 1
             prod['err'] = page
-        stat, page_max_cnt = get_int_val('page_max_cnt', request)
-        if not stat:
+        stat3, page_max_cnt = get_int_val('page_max_cnt', request)
+        if not stat3:
             prod['rescode'] = 1
             prod['err'] = page_max_cnt
-        res = data.get_cat_homepage(cat_id, page, page_max_cnt)
-        for k,v in res.items():
-            prod[k] = v
+        if stat1 and stat2 and stat3:
+            res = news.get_cat_homepage(cat_id, page, page_max_cnt)
+            for k,v in res.items():
+                prod[k] = v
 
     # 新闻主页
     elif tid == mock_data.type_dict['news_homepage']:
-        stat, doc_id = get_str_val('doc_id', -1)
-        if not stat:
+        stat1, doc_id = get_str_val('doc_id', request)
+        if not stat1:
             prod['rescode'] = 1
             prod['err'] = doc_id
-        res = data.get_news_homepage(doc_id)
-        for k,v in res.items():
-            prod[k] = v
+        stat2, list_type = get_str_val('list_type', request)
+        if not stat2:
+            prod['rescode'] = 1
+            prod['err'] = list_type
+        stat3, list_desc = get_str_val('list_desc', request)
+        if not stat3:
+            prod['rescode'] = 1
+            prod['err'] = list_desc
+        if stat1 and stat2 and stat3:
+            res = news.get_news_homepage(doc_id, list_type, list_desc)
+            for k,v in res.items():
+                prod[k] = v
 
     # 个人主页        
     elif tid == mock_data.type_dict['my_homepage']:
@@ -127,20 +139,21 @@ def normal_work(tid, qid, request):
 
     # 增删订阅分类
     elif tid == mock_data.type_dict['handle_rss']:
-        stat, uid = get_int_val('uid', request)
-        if not stat:
+        stat1, uid = get_int_val('uid', request)
+        if not stat1:
             prod['rescode'] = 1
             prod['err'] = uid
-        stat, opt = get_int_val('opt', request)
-        if not stat:
+        stat2, opt = get_int_val('opt', request)
+        if not stat2:
             prod['rescode'] = 1
             prod['err'] = opt
-        stat, cat_id_list = get_list_val('cat_id', request)
-        if not stat:
+        stat3, cat_id_list = get_list_val('cat_id', request)
+        if not stat3:
             prod['rescode'] = 1
             prod['err'] = cat_id_list
-        res = users.handle_rss(uid, cat_id_list, opt)
-        prod['rescode'] = res['rescode']
+        if stat1 and stat2 and stat3:
+            res = users.handle_rss(uid, cat_id_list, opt)
+            prod['rescode'] = res['rescode']
 
     elif tid == mock_data.type_dict['my_rss']:
         stat, uid = get_int_val('uid', request)
@@ -152,21 +165,22 @@ def normal_work(tid, qid, request):
             prod[k] = v
 
     elif tid == mock_data.type_dict['rss_homepage']:
-        stat, uid = get_int_val('uid', request)
-        if not stat:
+        stat1, uid = get_int_val('uid', request)
+        if not stat1:
             prod['rescode'] = 1
             prod['err'] = uid
-        stat, page = get_int_val('page', request)
-        if not stat:
+        stat2, page = get_int_val('page', request)
+        if not stat2:
             prod['rescode'] = 1
             prod['err'] = page
-        stat, page_max_cnt = get_int_val('page_max_cnt', request)
-        if not stat:
+        stat3, page_max_cnt = get_int_val('page_max_cnt', request)
+        if not stat3:
             prod['rescode'] = 1
             prod['err'] = page_max_cnt
-        res = users.get_rss_homepage(uid, page, page_max_cnt)
-        for k,v in res.items():
-            prod[k] = v
+        if stat1 and stat2 and stat3:
+            res = users.get_rss_homepage(uid, page, page_max_cnt)
+            for k,v in res.items():
+                prod[k] = v
 
     elif tid == mock_data.type_dict['my_fav']:
         stat, uid = get_int_val('uid', request)
@@ -178,97 +192,103 @@ def normal_work(tid, qid, request):
             prod[k] = v
 
     elif tid == mock_data.type_dict['handle_fav']:
-        stat, uid = get_int_val('uid', request)
-        if not stat:
+        stat1, uid = get_int_val('uid', request)
+        if not stat1:
             prod['rescode'] = 1
             prod['err'] = uid
-        stat, opt = get_int_val('opt', request)
-        if not stat:
+        stat2, opt = get_int_val('opt', request)
+        if not stat2:
             prod['rescode'] = 1
             prod['err'] = opt
-        stat, fav_id = get_str_val('fav_id', request)
-        if not stat:
+        stat3, fav_id = get_str_val('fav_id', request)
+        if not stat3:
             prod['rescode'] = 1
             prod['err'] = fav_id
-        stat, doc_id = get_str_val('doc_id', request)
-        if not stat:
+        stat4, doc_id = get_str_val('doc_id', request)
+        if not stat4:
             prod['rescode'] = 1
             prod['err'] = doc_id
-        res = users.handle_fav(uid, opt, fav_id, doc_id)
-        for k,v in res.items():
-            prod[k] = v
+        if stat1 and stat2 and stat3 and stat4:
+            res = users.handle_fav(uid, opt, fav_id, doc_id)
+            for k,v in res.items():
+                prod[k] = v
 
     elif tid == mock_data.type_dict['handle_fav_set']:
-        stat, uid = get_int_val('uid', request)
-        if not stat:
+        stat1, uid = get_int_val('uid', request)
+        if not stat1:
             prod['rescode'] = 1
             prod['err'] = uid
-        stat, opt = get_int_val('opt', request)
-        if not stat:
+        stat2, opt = get_int_val('opt', request)
+        if not stat2:
             prod['rescode'] = 1
             prod['err'] = opt
-        stat, fav_id = get_str_val('fav_id', request)
-        stat, fav_name = get_str_val('fav_name', request)
-        res = users.handle_fav_set(uid, opt, fav_name, fav_id)
-        for k,v in res.items():
-            prod[k] = v        
+        if stat1 and stat2:
+            stat, fav_id = get_str_val('fav_id', request)
+            stat, fav_name = get_str_val('fav_name', request)
+            res = users.handle_fav_set(uid, opt, fav_name, fav_id)
+            for k,v in res.items():
+                prod[k] = v        
  
     elif tid == mock_data.type_dict['search']:
-        stat, query = get_str_val('query', request)
-        if not stat:
+        stat1, query = get_str_val('query', request)
+        if not stat1:
             prod['rescode'] = 1
             prod['err'] = query
-        stat, page = get_int_val('page', request)
-        if not stat:
+        stat2, page = get_int_val('page', request)
+        if not stat2:
             prod['rescode'] = 1
             prod['err'] = page
-        stat, page_max_cnt = get_int_val('page_max_cnt', request)
-        if not stat:
+        stat3, page_max_cnt = get_int_val('page_max_cnt', request)
+        if not stat3:
             prod['rescode'] = 1
             prod['err'] = page_max_cnt
-        res = data.get_query(query, page, page_max_cnt)
-        for k,v in res.items():
-            prod[k] = v
+        if stat1 and stat2 and stat3:
+            res = news.get_query(query, page, page_max_cnt)
+            for k,v in res.items():
+                prod[k] = v
 
     elif tid == mock_data.type_dict['source_guide']:
-        res = data.get_source()
+        res = news.get_source()
         for k,v in res.items():
             prod[k] = v
 
     elif tid == mock_data.type_dict['source_homepage']:
-        stat, source_name = get_str_val('source_name', request)
-        if not stat:
+        stat1, source_name = get_str_val('source_name', request)
+        if not stat1:
             prod['rescode'] = 1
             prod['err'] = query
-        stat, page = get_int_val('page', request)
-        if not stat:
+        stat2, page = get_int_val('page', request)
+        if not stat2:
             prod['rescode'] = 1
             prod['err'] = page
-        stat, page_max_cnt = get_int_val('page_max_cnt', request)
-        if not stat:
+        stat3, page_max_cnt = get_int_val('page_max_cnt', request)
+        if not stat3:
             prod['rescode'] = 1
             prod['err'] = page_max_cnt
-        res = data.get_source_homepage(source_name, page, page_max_cnt)
-        for k,v in res.items():
-            prod[k] = v
+        if stat1 and stat2 and stat3:
+            res = news.get_source_homepage(source_name, page, page_max_cnt)
+            for k,v in res.items():
+                prod[k] = v
 
     elif tid == mock_data.type_dict['handle_share']:
         stat, doc_id = get_str_val('doc_id', request)
         if not stat:
             prod['rescode'] = 1
             prod['err'] = doc_id
-        res = data.handle_share(doc_id)
-        for k,v in res.items():
-            prod[k] = v
+        if stat:
+            res = news.handle_share(doc_id)
+            for k,v in res.items():
+                prod[k] = v
 
     elif tid == mock_data.type_dict['handle_like']:
         stat, doc_id = get_str_val('doc_id', request)
         if not stat:
             prod['rescode'] = 1
             prod['err'] = doc_id
-        res = data.handle_like(doc_id)
-        for k,v in res.items():
-            prod[k] = v
+        if stat:
+            res = news.handle_like(doc_id)
+            for k,v in res.items():
+                prod[k] = v
 
     return HttpResponse(json.dumps(prod, ensure_ascii=False))
 
@@ -277,7 +297,10 @@ def handle_request(request):
     print 'tid ' + str(tid)
     qid = request.GET.get('qid', -1)
     if qid == -1:
-        return HttpResponse('No qid')
+        prod = {}
+        prod['rescode'] = 1
+        prod['err'] = 'No qid'
+        return HttpResponse(json.dumps(prod, ensure_ascii=False))
     if qid == 'mock':
         prod = mock_data.mock_data[tid]
         return HttpResponse(json.dumps(prod, ensure_ascii=False))

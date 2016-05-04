@@ -181,7 +181,8 @@ news_homepage_request = {
     "qid":"mock",
     "doc_id":123,
     #type=cat&cat_id=321 or type=fav&fav_id=111 or type=source&source_name=sina
-    "list_desc":"type=rss&uid=111",
+    "list_type":"rss",
+    "list_desc":"10001",
 }
 
 news_homepage_response = {

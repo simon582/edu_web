@@ -79,6 +79,10 @@ def get_my_rss(uid):
     user_dict = edu_db.user.find_one({'uid':uid})
     res = {}
     res['cat_list'] = []
+    if not 'rss_list' in user_dict:
+        res['recode'] = 1
+        res['err'] = 'no rss booked'
+        return res
     for cat_id in user_dict['rss_list']:
         cat_info = {}
         cat_dict = edu_db.cat.find_one({'cat_id':cat_id})
@@ -88,18 +92,26 @@ def get_my_rss(uid):
         res['cat_list'].append(cat_info)
     return res 
 
-def get_rss_homepage(uid, page, page_max_cnt):
+def get_rss_news_list(uid):
     edu_db = comm.create_conn()
-    res = {}
-    res['doc_list'] = []
     user_dict = edu_db.user.find_one({'uid':uid})
     temp_list = []
+    if not 'rss_list' in user_dict:
+        res['recode'] = 1
+        res['err'] = 'no rss booked'
+        return res
     for cat_id in user_dict['rss_list']:
         doc_list = edu_db.formal_news.find({'cat_id':cat_id})
         for doc in doc_list:
             temp_list.append(comm.transform_doc(doc))
     sorted(temp_list, key=lambda temp : temp['ts'])
-    max_pos = min(len(temp_list)-1, (page+1)*page_max_cnt) 
+    return temp_list
+
+def get_rss_homepage(uid, page, page_max_cnt):
+    res = {}
+    res['doc_list'] = []
+    temp_list = get_rss_news_list(uid)
+    max_pos = min(len(temp_list)-1, (page+1)*page_max_cnt)
     res['doc_list'] = temp_list[page*page_max_cnt : max_pos]
     if max_pos == len(temp_list) - 1:
         res['end'] = 1
@@ -112,6 +124,8 @@ def get_my_fav(uid):
     res = {}
     res['fav_list'] = []
     user_dict = edu_db.user.find_one({'uid':uid})
+    if not 'fav_list' in user_dict:
+        return res
     for fav_id, fav_info in user_dict['fav_list'].items():
         fav_dict = {}
         fav_dict['fav_id'] = fav_id
