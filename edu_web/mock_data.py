@@ -29,6 +29,7 @@ type_list = [
     'handle_share',             #15
     'handle_like',              #16
     'handle_fav_set',           #17
+    'fav_homepage',             #18
 ]
 type_dict = generate_enum_dict(type_list)
 
@@ -289,6 +290,22 @@ handle_fav_set_response = {
 }
 
 mock_data[type_dict['handle_fav_set']] = handle_fav_set_response
+
+fav_homepage_request = {
+    'type':type_dict['fav_homepage'],
+    'qid':'mock',
+    'fav_id':'abc',
+    'page':1,
+    'page_max_cnt':10,
+}
+
+fav_homepage_response = {
+    'qid':'mock',
+    'end':random.choice([0,1]),
+    'doc_list':example_doc_list,
+}
+
+mock_data[type_dict['fav_homepage']] = fav_homepage_response
 
 '''=====================订阅模块====================='''
 

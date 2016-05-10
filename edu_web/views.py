@@ -84,13 +84,13 @@ def normal_work(tid, qid, request):
         if not stat3:
             prod['rescode'] = 1
             prod['err'] = category
-        stat4, data = get_str_val('data', request)
+        stat4, personal_info = get_str_val('data', request)
         if not stat4:
             prod['rescode'] = 1
-            prod['err'] = data
+            prod['err'] = personal_info
         
         if stat1 and stat2 and stat3 and stat4:
-            res = users.register_user(username, passwd, category, news)
+            res = users.register_user(username, passwd, category, personal_info)
             for k,v in res.items():
                 prod[k] = v
 
@@ -143,16 +143,12 @@ def normal_work(tid, qid, request):
         if not stat1:
             prod['rescode'] = 1
             prod['err'] = uid
-        stat2, opt = get_int_val('opt', request)
+        stat2, cat_id_list = get_list_val('cat_id', request)
         if not stat2:
             prod['rescode'] = 1
-            prod['err'] = opt
-        stat3, cat_id_list = get_list_val('cat_id', request)
-        if not stat3:
-            prod['rescode'] = 1
             prod['err'] = cat_id_list
-        if stat1 and stat2 and stat3:
-            res = users.handle_rss(uid, cat_id_list, opt)
+        if stat1 and stat2:
+            res = users.handle_rss(uid, cat_id_list)
             prod['rescode'] = res['rescode']
 
     elif tid == mock_data.type_dict['my_rss']:

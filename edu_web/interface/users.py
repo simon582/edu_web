@@ -58,18 +58,16 @@ opt_list = [
 ]
 opt_dict = comm.generate_enum_dict(opt_list)
 
-def handle_rss(uid, cat_id_list, opt):
+def handle_rss(uid, cat_id_list):
     edu_db = comm.create_conn()
     user_dict = edu_db.user.find_one({'uid':uid})
-    if opt == opt_dict['add']:
-        if not 'rss_list' in user_dict:
-            user_dict['rss_list'] = []
-        for cat_id in cat_id_list:
+    user_dict['rss_list'] = []
+    for cat_id in cat_id_list:
+        try:
             user_dict['rss_list'].append(int(cat_id))
-        user_dict['rss_list'] = list(set(user_dict['rss_list']))
-    if opt == opt_dict['remove']:
-        for cat_id in cat_id_list:
-            user_dict['rss_list'].remove(cat_id)
+        except:
+            print 'illeagel cat_id:' + cat_id
+    user_dict['rss_list'] = list(set(user_dict['rss_list']))
     del(user_dict['_id'])
     edu_db.user.update({'uid':uid}, {'$set':user_dict})
     return {'rescode':res_code_dict['success']}
@@ -89,6 +87,8 @@ def get_my_rss(uid):
         cat_info['cat_id'] = cat_id
         cat_info['title'] = cat_dict['cat_name']
         cat_info['bg_image'] = get_default_img()
+        cat_info['last_title'] = cat_dict['last_title']
+        cat_info['last_modify'] = cat_dict['last_modify']
         res['cat_list'].append(cat_info)
     return res 
 
@@ -97,6 +97,7 @@ def get_rss_news_list(uid):
     user_dict = edu_db.user.find_one({'uid':uid})
     temp_list = []
     if not 'rss_list' in user_dict:
+        res = {}
         res['recode'] = 1
         res['err'] = 'no rss booked'
         return res

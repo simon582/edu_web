@@ -39,6 +39,14 @@ def refresh_last_in_cat():
         prod['last_title'], prod['last_modify'] = get_last_news(prod['cat_id'])
         edu_db.cat.update({'cat_id':prod['cat_id']}, {'$set':prod})        
 
+def refresh_last_in_cat():
+    edu_db = pymongo.MongoClient()['edu']
+    for prod in edu_db.cat.find():
+        del(prod['_id'])
+        prod['last_title'], prod['last_modify'] = get_last_news(prod['cat_id'])
+        edu_db.cat.update({'cat_id':prod['cat_id']}, {'$set':prod})        
+
 if __name__ == "__main__":
     refresh_last_in_cat()
+    refresh_last_in_source()
     #work()
