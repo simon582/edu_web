@@ -294,6 +294,7 @@ mock_data[type_dict['handle_fav_set']] = handle_fav_set_response
 fav_homepage_request = {
     'type':type_dict['fav_homepage'],
     'qid':'mock',
+    'uid':10001,
     'fav_id':'abc',
     'page':1,
     'page_max_cnt':10,

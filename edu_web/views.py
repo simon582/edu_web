@@ -218,10 +218,19 @@ def normal_work(tid, qid, request):
         if not stat2:
             prod['rescode'] = 1
             prod['err'] = opt
-        if stat1 and stat2:
-            stat, fav_id = get_str_val('fav_id', request)
-            stat, fav_name = get_str_val('fav_name', request)
-            res = users.handle_fav_set(uid, opt, fav_name, fav_id)
+        stat3, fav_id = get_str_val('fav_id', request)
+        if not stat3:
+            prod['rescode'] = 1
+            prod['err'] = fav_id
+        stat4, fav_name = get_str_val('fav_name', request)
+        if not stat4:
+            prod['rescode'] = 1
+            prod['err'] = fav_name
+        if stat1 and stat2 and stat3 and stat4:
+            stat5, doc_id = get_str_val('doc_id', request)
+            if not stat5:
+                doc_id = ''
+            res = users.handle_fav_set(uid, opt, fav_name, fav_id, doc_id)
             for k,v in res.items():
                 prod[k] = v        
  
@@ -266,6 +275,28 @@ def normal_work(tid, qid, request):
             for k,v in res.items():
                 prod[k] = v
 
+    elif tid == mock_data.type_dict['fav_homepage']:
+        stat1, fav_id = get_str_val('fav_id', request)
+        if not stat1:
+            prod['rescode'] = 1
+            prod['err'] = fav_id
+        stat2, uid = get_int_val('uid', request)
+        if not stat2:
+            prod['rescode'] = 1
+            prod['err'] = uid
+        stat3, page = get_int_val('page', request)
+        if not stat3:
+            prod['rescode'] = 1
+            prod['err'] = page
+        stat4, page_max_cnt = get_int_val('page_max_cnt', request)
+        if not stat4:
+            prod['rescode'] = 1
+            prod['err'] = page_max_cnt
+        if stat1 and stat2 and stat3 and stat4:
+            res = users.get_fav_homepage(uid, fav_id, page, page_max_cnt)
+            for k,v in res.items():
+                prod[k] = v
+    
     elif tid == mock_data.type_dict['handle_share']:
         stat, doc_id = get_str_val('doc_id', request)
         if not stat:

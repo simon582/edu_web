@@ -112,9 +112,43 @@ def get_rss_homepage(uid, page, page_max_cnt):
     res = {}
     res['doc_list'] = []
     temp_list = get_rss_news_list(uid)
-    max_pos = min(len(temp_list)-1, (page+1)*page_max_cnt)
-    res['doc_list'] = temp_list[page*page_max_cnt : max_pos]
-    if max_pos == len(temp_list) - 1:
+    max_pos = min(len(temp_list), page*page_max_cnt)
+    res['doc_list'] = temp_list[(page-1)*page_max_cnt : max_pos]
+    if max_pos == len(temp_list):
+        res['end'] = 1
+    else:
+        res['end'] = 0
+    return res
+
+def get_fav_news_list(uid, fav_id):
+    edu_db = comm.create_conn()
+    user_dict = edu_db.user.find_one({'uid':uid})
+    temp_list = []
+    if not 'fav_list' in user_dict:
+        res = {}
+        res['recode'] = 1
+        res['err'] = 'no fav booked'
+        return res
+    if not fav_id in user_dict['fav_list']:
+        res = {}
+        res['rescode'] = 1
+        res['err'] = 'fav_id is not existed in this user:' + str(uid)
+        return res
+    for doc_id in user_dict['fav_list'][fav_id]['doc_list']:
+        doc = edu_db.formal_news.find_one({'doc_id':doc_id})
+        temp_list.append(comm.transform_doc(doc))
+    sorted(temp_list, key=lambda temp : temp['ts'])
+    return temp_list
+
+def get_fav_homepage(uid, fav_id, page, page_max_cnt):
+    res = {}
+    res['doc_list'] = []
+    temp_list = get_fav_news_list(uid, fav_id)
+    if type(temp_list) == dict():
+        return temp_list
+    max_pos = min(len(temp_list), page*page_max_cnt)
+    res['doc_list'] = temp_list[(page-1)*page_max_cnt : max_pos]
+    if max_pos == len(temp_list):
         res['end'] = 1
     else:
         res['end'] = 0
@@ -148,7 +182,7 @@ def handle_fav(uid, opt, fav_id, doc_id):
     edu_db.user.update({'uid':uid}, {'$set':user_dict}) 
     return {'rescode':res_code_dict['success']}
 
-def handle_fav_set(uid, opt, fav_name, fav_id):
+def handle_fav_set(uid, opt, fav_name, fav_id, doc_id):
     edu_db = comm.create_conn()
     user_dict = edu_db.user.find_one({'uid':uid})
     if not 'fav_list' in user_dict:
@@ -158,6 +192,8 @@ def handle_fav_set(uid, opt, fav_name, fav_id):
         user_dict['fav_list'][fav_id] = {} 
         user_dict['fav_list'][fav_id]['fav_name'] = fav_name
         user_dict['fav_list'][fav_id]['doc_list'] = []
+        if doc_id != '':
+            user_dict['fav_list'][fav_id]['doc_list'].append(doc_id)
     if opt == opt_dict['remove']:
         del(user_dict['fav_list'][fav_id])
     del(user_dict['_id'])

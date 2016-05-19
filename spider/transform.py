@@ -46,7 +46,16 @@ def refresh_last_in_cat():
         prod['last_title'], prod['last_modify'] = get_last_news(prod['cat_id'])
         edu_db.cat.update({'cat_id':prod['cat_id']}, {'$set':prod})        
 
+def add_source_details():
+    edu_db = pymongo.MongoClient()['edu']
+    for prod in edu_db.formal_news.find():
+        del(prod['_id'])
+        prod['source_desc'] = '中国教育在线'
+        prod['source_icon'] = 'http://121.196.226.177:8080/media/logo/eol_logo.jpg'
+        edu_db.formal_news.update({'doc_id':prod['doc_id']}, {'$set':prod})
+
 if __name__ == "__main__":
-    refresh_last_in_cat()
-    refresh_last_in_source()
+    #refresh_last_in_cat()
+    #refresh_last_in_source()
     #work()
+    add_source_details()
