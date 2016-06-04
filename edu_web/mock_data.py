@@ -113,6 +113,7 @@ mock_data[type_dict['register']] = register_response
 cat_guide_request = {
     "type":type_dict['cat_guide'],
     "qid":"mock",
+    "uid":111222,
 }
 
 cat_example = {
@@ -144,6 +145,7 @@ cat_homepage_request = {
     "cat_id":"123",
     "page":1,
     "page_max_cnt":10,
+    "uid":111222,
 }
 
 doc_example = {
@@ -184,6 +186,7 @@ news_homepage_request = {
     #type=cat&cat_id=321 or type=fav&fav_id=111 or type=source&source_name=sina
     "list_type":"rss",
     "list_desc":"10001",
+    "uid":111222,
 }
 
 news_homepage_response = {
@@ -192,6 +195,7 @@ news_homepage_response = {
     "base":doc_example,
     "pre_id":122,
     "next_id":124,
+    "recommend_list":[doc_example,doc_example,doc_example,doc_example]
 }
 
 mock_data[type_dict['news_homepage']] = news_homepage_response
@@ -220,6 +224,7 @@ search_request = {
     "query":"中考",
     "page":1,
     "page_max_cnt":10,
+    "uid":111222,
 }
 
 search_response = {
@@ -368,6 +373,7 @@ mock_data[type_dict['rss_homepage']] = rss_homepage_response
 source_guide_request = {
     "type":type_dict['source_guide'],
     "qid":"mock",
+    "uid":111222,
 }
 
 source_example = {
@@ -392,6 +398,7 @@ source_homepage_request = {
     "source_name":"Sina",
     "page":1,
     "page_max_cnt":10,
+    "uid":111222,
 }
 
 source_homepage_response = {
@@ -408,6 +415,7 @@ handle_share_request = {
     "type":type_dict['handle_share'],
     "qid":"mock",
     "doc_id":100001,
+    "uid":111222,
 }
 
 handle_share_response = {
@@ -422,7 +430,9 @@ mock_data[type_dict['handle_share']] = handle_share_response
 handle_like_request = {
     "type":type_dict['handle_like'],
     "qid":"mock",
+    "opt":opt_dict['add'],
     "doc_id":100001,
+    "uid":10001,
 }
 
 handle_like_response = {
